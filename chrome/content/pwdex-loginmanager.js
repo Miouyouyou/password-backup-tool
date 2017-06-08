@@ -384,15 +384,20 @@ var passwordExporterLoginMgr = {
                 if (type == 'xml') {
                     this.totalCount = entries.length;
 
+                    if (properties.importversion == '1.0.2' || properties.importversion == '1.0.4')
+                        var emptySubmitURL = "";
+                    else
+                        var emptySubmitURL = null;
+
                     for (var i = 0; i < entries.length; i++) {
                         var loginInfo = new nsLoginInfo(
                                                 (entries[i].getAttribute('host') == null ? null : unescape(entries[i].getAttribute('host'))),
-                                                (entries[i].getAttribute('formSubmitURL') == null ? "" : unescape(entries[i].getAttribute('formSubmitURL'))),
+                                                (entries[i].getAttribute('formSubmitURL') == null ? emptySubmitURL : unescape(entries[i].getAttribute('formSubmitURL'))),
                                                 ((entries[i].getAttribute('httpRealm') == null || entries[i].getAttribute('httpRealm') == "") ? null : unescape(entries[i].getAttribute('httpRealm'))),
                                                 unescape(entries[i].getAttribute('user')),
                                                 unescape(entries[i].getAttribute('password')),
-                                                (entries[i].getAttribute('userFieldName') == null ? null : unescape(entries[i].getAttribute('userFieldName'))),
-                                                (entries[i].getAttribute('passFieldName') == null ? null : unescape(entries[i].getAttribute('passFieldName')))
+                                                (entries[i].getAttribute('userFieldName') == null ? "" : unescape(entries[i].getAttribute('userFieldName'))),
+                                                (entries[i].getAttribute('passFieldName') == null ? "" : unescape(entries[i].getAttribute('passFieldName')))
                                             );
 
                         var formattedLogins = this.getFormattedLogin(properties, loginInfo);
@@ -422,13 +427,13 @@ var passwordExporterLoginMgr = {
                             var fields = entryArray[i].split(',');
 
                             var loginInfo = new nsLoginInfo(
-                                                    (fields[0] == '' ? null : unescape(fields[0])),
+                                                    (fields[0] == '' ? null : unescape(fields[0])),// hostname
                                                     "", // formSubmitURL
                                                     null, // httpRealm
                                                     unescape(fields[1]), // username
                                                     unescape(fields[2]), // password
-                                                    (fields[3] == '' ? null : unescape(fields[3])), // usernameField
-                                                    (fields[4] == '' ? null : unescape(fields[4])) // passwordField
+                                                    unescape(fields[3]), // usernameField
+                                                    unescape(fields[4]) // passwordField
                                                 );
                         }
                         else {
@@ -437,12 +442,12 @@ var passwordExporterLoginMgr = {
 
                             var loginInfo = new nsLoginInfo(
                                                     (fields[0] == '"' ? null : unescape(fields[0].replace('"', ''))), // hostname
-                                                    (fields[3] == '' ? "" : unescape(fields[3])), // formSubmitURL
+                                                    (fields[3] == '' ? null : unescape(fields[3])), // formSubmitURL
                                                     (fields[4] == '' ? null : unescape(fields[4])), // httpRealm
                                                     unescape(fields[1]), // username
                                                     unescape(fields[2]), // password
-                                                    (fields[5] == '' ? null : unescape(fields[5])), // usernameField
-                                                    (fields[6] == '"' ? null : unescape(fields[6].replace('"', ''))) // passwordField
+                                                    unescape(fields[5]), // usernameField
+                                                    unescape(fields[6].replace('"', '')) // passwordField
                                                 );
                         }
 
