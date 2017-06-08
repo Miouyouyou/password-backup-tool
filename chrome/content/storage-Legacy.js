@@ -85,7 +85,7 @@ var passwordExporterStorageLegacy = {
          *
          * Note: Proxy logins are also stored in this format.
          */
-        if (aLogin.hostname.indexOf("://") == -1) {
+        if (aLogin.hostname && aLogin.hostname.indexOf("://") == -1) {
             var oldHost = aLogin.hostname;
 
             // Parse out "host:port".
