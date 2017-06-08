@@ -8,6 +8,22 @@
  * Password Exporter - Login Manager support
  * This file is for use with the new login manager in Firefox 3
  */
+const { classes: Cc, interfaces: Ci, results: Cr, utils: Cu } = Components;
+
+Cu.import("resource://gre/modules/Task.jsm");
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+Cu.import("resource://gre/modules/NetUtil.jsm");
+
+XPCOMUtils.defineLazyModuleGetter(this, "Sqlite",
+                                  "resource://gre/modules/Sqlite.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "OSCrypto",
+                                  "chrome://pwdex-modules/content/OSCrypto.jsm");
+
+const AUTH_TYPE = {
+  SCHEME_HTML: 0,
+  SCHEME_BASIC: 1,
+  SCHEME_DIGEST: 2
+};
 
 var passwordExporterLoginMgr = {
     export: {
@@ -39,7 +55,7 @@ var passwordExporterLoginMgr = {
                     result.file.remove(true);
                 }
 
-                result.file.create(result.file.NORMAL_FILE_TYPE, 0666);
+                result.file.create(result.file.NORMAL_FILE_TYPE, parseInt("0666", 8));
                 stream.init(result.file, 0x02, 0x200, null);
 
                 // Whether to encrypt the passwords
@@ -245,7 +261,7 @@ var passwordExporterLoginMgr = {
                 if (fp.file.exists())
                     fp.file.remove(true);
 
-                fp.file.create(fp.file.NORMAL_FILE_TYPE, 0666);
+                fp.file.create(fp.file.NORMAL_FILE_TYPE, parseInt("0666", 8));
                 stream.init(fp.file, 0x02, 0x200, null);
 
                 var xml = this.export();
@@ -300,13 +316,13 @@ var passwordExporterLoginMgr = {
             if (fp.show() == fp.returnCancel)
                 return;
 
-            stream.init(fp.file, 0x01, 0444, null);
-            streamIO.init(stream);
-            input = streamIO.read(stream.available());
-            streamIO.close();
-            stream.close();
-
-            var parser = new DOMParser();
+            if (fp.file.path.indexOf('.csv') != -1 || fp.file.path.indexOf('.xml') != -1) {
+                stream.init(fp.file, 0x01, parseInt("0444", 8), null);
+                streamIO.init(stream);
+                input = streamIO.read(stream.available());
+                streamIO.close();
+                stream.close();
+            }
 
             // If CSV format, parse for header info
             if (fp.file.path.indexOf('.csv') != -1) {
@@ -328,7 +344,8 @@ var passwordExporterLoginMgr = {
                 this.import('csv', properties, input);
             }
             // If XML format, parse for header info
-            else {
+            else if (fp.file.path.indexOf('.xml') != -1) {
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(input, "text/xml");
                 var header = doc.documentElement.getElementsByTagName('entries')[0];
 
@@ -343,6 +360,23 @@ var passwordExporterLoginMgr = {
                                   'encrypt': header.getAttribute('encrypt')};
                 var entries = doc.documentElement.getElementsByTagName('entry');
                 this.import('xml', properties, entries);
+            // Chrome style Login Data
+            } else {
+                let that = this;
+                this.getRowsFromDBWithoutLocks(fp.file.path, "Chrome passwords",
+                    `SELECT origin_url, action_url, username_element, username_value,
+                    password_element, password_value, signon_realm, scheme, date_created,
+                    times_used FROM logins WHERE blacklisted_by_user = 0`).then((rows) => {
+                    var properties = {'extension': 'Password Exporter',
+                                    'importtype': 'saved',
+                                    'importversion': '1.1',
+                                    'encrypt': 'false'};
+                    that.import('chrome', properties, rows);
+                }).catch(ex => {
+//                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-cannot-import'));
+                    alert(ex);
+                    that.finished();
+                });
             }
         },
 
@@ -456,6 +490,45 @@ var passwordExporterLoginMgr = {
                             logins.push(login);
                         }
                     }
+                } else {
+                    let crypto = new OSCrypto();
+                    for (let row of entries) {
+                        let li = {
+                            username: row.getResultByName("username_value"),
+                            password: crypto.
+                                        decryptData(crypto.arrayToString(row.getResultByName("password_value")),null),
+                            hostName: NetUtil.newURI(row.getResultByName("origin_url")).prePath,
+                            submitURL: null,
+                            httpRealm: null,
+                            usernameElement: row.getResultByName("username_element"),
+                            passwordElement: row.getResultByName("password_element")
+                        };
+
+                        try {
+                            switch (row.getResultByName("scheme")) {
+                                case AUTH_TYPE.SCHEME_HTML:
+                                    li.submitURL = NetUtil.newURI(row.getResultByName("action_url")).prePath;
+                                    break;
+                                case AUTH_TYPE.SCHEME_BASIC:
+                                case AUTH_TYPE.SCHEME_DIGEST:
+                                    // signon_realm format is URIrealm, so we need remove URI
+                                    li.httpRealm = row.getResultByName("signon_realm")
+                                                            .substring(li.hostName.length + 1);
+                                    break;
+                                default:
+                                    throw new Error("Login data scheme type not supported: " +
+                                                        row.getResultByName("scheme"));
+                            }
+
+                            var loginInfo = new nsLoginInfo(li.hostName, li.submitURL, li.httpRealm, li.username, 
+                                                            li.password, li.usernameElement, li.passwordElement);
+                            logins.push(loginInfo);
+
+                        } catch (e) {
+                            Cu.reportError(e);
+                        }
+                    }
+                    crypto.finalize();
                 }
 
                 this.insertEntries(logins);
@@ -528,7 +601,6 @@ var passwordExporterLoginMgr = {
                 passwordExporter.import.finished();
                 return;
             }
-            5
             // Add another timer if there are more logins
             if (i < this.totalCount)
                 window.setTimeout("passwordExporter.import.updateProgress()", 0);
@@ -627,7 +699,7 @@ var passwordExporterLoginMgr = {
                 if (fp.show() == fp.returnCancel)
                     return;
 
-                stream.init(fp.file, 0x01, 0444, null);
+                stream.init(fp.file, 0x01, parseInt("0444", 8), null);
                 streamIO.init(stream);
                 input = streamIO.read(stream.available());
                 streamIO.close();
@@ -675,6 +747,69 @@ var passwordExporterLoginMgr = {
                     loginManager.setLoginSavingEnabled(entries[i].getAttribute('host'), false);
                 }
             }
+        },
+
+        /**
+        * Get all the rows corresponding to a select query from a database, without
+        * requiring a lock on the database. If fetching data fails (because someone
+        * else tried to write to the DB at the same time, for example), we will
+        * retry the fetch after a 100ms timeout, up to 10 times.
+        *
+        * @param path
+        *        the file path to the database we want to open.
+        * @param description
+        *        a developer-readable string identifying what kind of database we're
+        *        trying to open.
+        * @param selectQuery
+        *        the SELECT query to use to fetch the rows.
+        *
+        * @return a promise that resolves to an array of rows. The promise will be
+        *         rejected if the read/fetch failed even after retrying.
+        */
+        getRowsFromDBWithoutLocks(path, description, selectQuery) {
+            let dbOptions = {
+                readOnly: true,
+                ignoreLockingMode: true,
+                path,
+            };
+
+            const RETRYLIMIT = 10;
+            const RETRYINTERVAL = 100;
+            return Task.spawn(function* innerGetRows() {
+                let rows = null;
+                for (let retryCount = RETRYLIMIT; retryCount && !rows; retryCount--) {
+                    // Attempt to get the rows. If this succeeds, we will bail out of the loop,
+                    // close the database in a failsafe way, and pass the rows back.
+                    // If fetching the rows throws, we will wait RETRYINTERVAL ms
+                    // and try again. This will repeat a maximum of RETRYLIMIT times.
+                    let db;
+                    let didOpen = false;
+                    let exceptionSeen;
+                    try {
+                        db = yield Sqlite.openConnection(dbOptions);
+                        didOpen = true;
+                        rows = yield db.execute(selectQuery);
+                    } catch (ex) {
+                        if (!exceptionSeen) {
+                            Cu.reportError(ex);
+                        }
+                        exceptionSeen = ex;
+                    } finally {
+                        try {
+                            if (didOpen) {
+                                yield db.close();
+                            }
+                        } catch (ex) {}
+                    }
+                    if (exceptionSeen) {
+                        yield new Promise(resolve => setTimeout(resolve, RETRYINTERVAL));
+                    }
+                }
+                if (!rows) {
+                    throw new Error("Couldn't get rows from the " + description + " database.");
+                }
+                return rows;
+            });
         }
     }
 };
