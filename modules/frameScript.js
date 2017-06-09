@@ -20,8 +20,8 @@ let PwdExScript = {
     // do a quick domain test to filter out pages were aren't interested in.
     if ((null != doc) && (null != doc.location) &&
         (null != doc.location.href) && PWDEX_RE_PREFS.test(doc.location.href)) {
-      Components.utils.import("chrome://pwdex-modules/content/common.js");
-      Components.utils.import("chrome://pwdex-modules/content/ui.js");
+      Components.utils.import("chrome://pwdbt-modules/content/common.js");
+      Components.utils.import("chrome://pwdbt-modules/content/ui.js");
       this._lastButton = PwdEx.UI.addFxButton(doc);
     }
   }

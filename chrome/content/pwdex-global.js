@@ -5,9 +5,9 @@
  **/
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://pwdex-modules/content/common.js");
-Components.utils.import("chrome://pwdex-modules/content/io.js");
-Components.utils.import("chrome://pwdex-modules/content/ui.js");
+Components.utils.import("chrome://pwdbt-modules/content/common.js");
+Components.utils.import("chrome://pwdbt-modules/content/io.js");
+Components.utils.import("chrome://pwdbt-modules/content/ui.js");
 
 /**
  * Password Exporter - Global
@@ -49,8 +49,8 @@ var passwordExporter = {
     checkAgreement: function() {
         var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("");
 
-        if (prefs.getPrefType('extensions.passwordexporter.agreeVersion') == prefs.PREF_STRING) {
-            if (this.version == prefs.getCharPref('extensions.passwordexporter.agreeVersion')) {
+        if (prefs.getPrefType('extensions.pwdbackuptool.agreeVersion') == prefs.PREF_STRING) {
+            if (this.version == prefs.getCharPref('extensions.pwdbackuptool.agreeVersion')) {
                 this.accepted = true;
                 return true;
             }
@@ -58,7 +58,7 @@ var passwordExporter = {
 
         prefs = null;
 
-        window.openDialog("chrome://passwordexporter/content/firstrunDialog.xul", "","chrome,resizable,centerscreen,close=no,modal");
+        window.openDialog("chrome://pwdbackuptool/content/firstrunDialog.xul", "","chrome,resizable,centerscreen,close=no,modal");
         return false;
     },
 
@@ -66,7 +66,7 @@ var passwordExporter = {
     setAgreement: function() {
         var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("");
 
-        prefs.setCharPref('extensions.passwordexporter.agreeVersion', this.version);
+        prefs.setCharPref('extensions.pwdbackuptool.agreeVersion', this.version);
         this.accepted = true;
     },
 
@@ -119,8 +119,8 @@ var passwordExporter = {
         var prefs = Components.classes["@mozilla.org/preferences-service;1"].
                     getService(Components.interfaces.nsIPrefService).getBranch("");
 
-        if (prefs.getPrefType('extensions.passwordexporter.debug') == prefs.PREF_BOOL) {
-            if (true == prefs.getBoolPref('extensions.passwordexporter.debug'))
+        if (prefs.getPrefType('extensions.pwdbackuptool.debug') == prefs.PREF_BOOL) {
+            if (true == prefs.getBoolPref('extensions.pwdbackuptool.debug'))
                 this.dumpDebug = true;
         }
 

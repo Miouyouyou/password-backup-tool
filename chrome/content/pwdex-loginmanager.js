@@ -17,7 +17,7 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Sqlite",
                                   "resource://gre/modules/Sqlite.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "OSCrypto",
-                                  "chrome://pwdex-modules/content/OSCrypto.jsm");
+                                  "chrome://pwdbt-modules/content/OSCrypto.jsm");
 
 const AUTH_TYPE = {
   SCHEME_HTML: 0,
@@ -93,7 +93,7 @@ var passwordExporterLoginMgr = {
                                     null, PwdEx.stringBundle.GetStringFromName('passwordexporter.show-details'), null, null, {});
 
                     if (response == 1)
-                        window.openDialog("chrome://passwordexporter/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
+                        window.openDialog("chrome://pwdbackuptool/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
                 }
             }
         },
@@ -676,7 +676,7 @@ var passwordExporterLoginMgr = {
 
         // Open the import details window
         showDetailsWindow: function() {
-            window.openDialog("chrome://passwordexporter/content/pwdex-details-import.xul", "","chrome,resizable,centerscreen,close=no,modal");
+            window.openDialog("chrome://pwdbackuptool/content/pwdex-details-import.xul", "","chrome,resizable,centerscreen,close=no,modal");
         },
 
         // populate details textbox with failed entries

@@ -60,7 +60,7 @@ if ("undefined" == typeof(PwdEx)) {
 
       this.stringBundle =
         Services.strings.createBundle(
-          "chrome://passwordexporter/locale/passwordexporter.properties");
+          "chrome://pwdbackuptool/locale/passwordexporter.properties");
     },
 
     /**

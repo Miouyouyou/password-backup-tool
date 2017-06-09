@@ -7,8 +7,8 @@
 var EXPORTED_SYMBOLS = [];
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://pwdex-modules/content/common.js");
-Components.utils.import("chrome://pwdex-modules/content/io.js");
+Components.utils.import("chrome://pwdbt-modules/content/common.js");
+Components.utils.import("chrome://pwdbt-modules/content/io.js");
 
 PwdEx.UI = {
   /* Logger for this object. */
@@ -99,7 +99,7 @@ PwdEx.UI = {
       win.focus();
     } else {
       aWindow.openDialog(
-        "chrome://passwordexporter/content/pwdexDialog.xul",
+        "chrome://pwdbackuptool/content/pwdexDialog.xul",
         "passwordexporter-dialog",
         "chrome,centerscreen,dialog,resizable");
     }

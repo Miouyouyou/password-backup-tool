@@ -10,7 +10,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://pwdex-modules/content/common.js");
+Components.utils.import("chrome://pwdbt-modules/content/common.js");
 
 PwdEx.IO = {
   /* Logger for this object. */

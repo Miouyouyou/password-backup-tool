@@ -6,7 +6,7 @@
 
 "use strict";
 
-const SCRIPT_URL = "chrome://pwdex-modules/content/frameScript.js";
+const SCRIPT_URL = "chrome://pwdbt-modules/content/frameScript.js";
 const UNLOAD_MSG = "PwdEx:unload"
 const THUNDERBIRD_ID = "{3550f703-e582-4d05-9a08-453d09bdfdc6}";
 const MAIL_PREFS_TYPE = "Mail:Preferences";
@@ -32,8 +32,8 @@ let PwdExBoot = {
 
   init : function() {
     Components.utils.import("resource://gre/modules/Services.jsm");
-    Components.utils.import("chrome://pwdex-modules/content/common.js");
-    Components.utils.import("chrome://pwdex-modules/content/ui.js");
+    Components.utils.import("chrome://pwdbt-modules/content/common.js");
+    Components.utils.import("chrome://pwdbt-modules/content/ui.js");
 
     this._logger = PwdEx.getLogger("PwdExBoot");
     this._logger.debug("init");
@@ -78,9 +78,9 @@ let PwdExBoot = {
       gmm.broadcastAsyncMessage(UNLOAD_MSG, this._scriptURL);
     }
 
-    Components.utils.unload("chrome://pwdex-modules/content/ui.js");
-    Components.utils.unload("chrome://pwdex-modules/content/io.js");
-    Components.utils.unload("chrome://pwdex-modules/content/common.js");
+    Components.utils.unload("chrome://pwdbt-modules/content/ui.js");
+    Components.utils.unload("chrome://pwdbt-modules/content/io.js");
+    Components.utils.unload("chrome://pwdbt-modules/content/common.js");
   },
 
   windowListener :

@@ -1,26 +1,25 @@
-content     passwordexporter    chrome/content/
-content     pwdex-modules       modules/
+content     pwdbackuptool    chrome/content/
+content     pwdbt-modules    modules/
+skin        pwdbackuptool    classic/1.0   chrome/skin/
 
-locale      passwordexporter    ca      chrome/locale/ca/
-locale      passwordexporter    da-DK   chrome/locale/da-DK/
-locale      passwordexporter    de      chrome/locale/de/
-locale      passwordexporter    en-US   chrome/locale/en-US/
-locale      passwordexporter    es-AR   chrome/locale/es-AR/
-locale      passwordexporter    es-ES   chrome/locale/es-ES/
-locale      passwordexporter    fa-IR   chrome/locale/fa-IR/
-locale      passwordexporter    fr      chrome/locale/fr/
-locale      passwordexporter    hr-HR   chrome/locale/hr-HR/
-locale      passwordexporter    hu-HU   chrome/locale/hu-HU/
-locale      passwordexporter    it-IT   chrome/locale/it-IT/
-locale      passwordexporter    ja-JP   chrome/locale/ja-JP/
-locale      passwordexporter    nl      chrome/locale/nl/
-locale      passwordexporter    pl-PL   chrome/locale/pl-PL/
-locale      passwordexporter    pt-BR   chrome/locale/pt-BR/
-locale      passwordexporter    ru-RU   chrome/locale/ru-RU/
-locale      passwordexporter    sk-SK   chrome/locale/sk-SK/
-locale      passwordexporter    sq-AL   chrome/locale/sq-AL/
-locale      passwordexporter    tr-TR   chrome/locale/tr-TR/
-locale      passwordexporter    uk-UA   chrome/locale/uk-UA/
-locale      passwordexporter    zh-TW   chrome/locale/zh-TW/
-
-skin        passwordexporter    classic/1.0   chrome/skin/
+locale      pwdbackuptool    ca      chrome/locale/ca/
+locale      pwdbackuptool    da-DK   chrome/locale/da-DK/
+locale      pwdbackuptool    de      chrome/locale/de/
+locale      pwdbackuptool    en-US   chrome/locale/en-US/
+locale      pwdbackuptool    es-AR   chrome/locale/es-AR/
+locale      pwdbackuptool    es-ES   chrome/locale/es-ES/
+locale      pwdbackuptool    fa-IR   chrome/locale/fa-IR/
+locale      pwdbackuptool    fr      chrome/locale/fr/
+locale      pwdbackuptool    hr-HR   chrome/locale/hr-HR/
+locale      pwdbackuptool    hu-HU   chrome/locale/hu-HU/
+locale      pwdbackuptool    it-IT   chrome/locale/it-IT/
+locale      pwdbackuptool    ja-JP   chrome/locale/ja-JP/
+locale      pwdbackuptool    nl      chrome/locale/nl/
+locale      pwdbackuptool    pl-PL   chrome/locale/pl-PL/
+locale      pwdbackuptool    pt-BR   chrome/locale/pt-BR/
+locale      pwdbackuptool    ru-RU   chrome/locale/ru-RU/
+locale      pwdbackuptool    sk-SK   chrome/locale/sk-SK/
+locale      pwdbackuptool    sq-AL   chrome/locale/sq-AL/
+locale      pwdbackuptool    tr-TR   chrome/locale/tr-TR/
+locale      pwdbackuptool    uk-UA   chrome/locale/uk-UA/
+locale      pwdbackuptool    zh-TW   chrome/locale/zh-TW/

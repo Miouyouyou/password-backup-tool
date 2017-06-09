@@ -6,9 +6,9 @@
   - obtain one at http://mozilla.org/MPL/2.0/. -->
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
-<?xml-stylesheet href="chrome://passwordexporter/skin/passwordexporter.css" type="text/css"?>
+<?xml-stylesheet href="chrome://pwdbackuptool/skin/passwordexporter.css" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://passwordexporter/locale/passwordexporter.dtd" >
+<!DOCTYPE window SYSTEM "chrome://pwdbackuptool/locale/passwordexporter.dtd" >
 
 <dialog xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
