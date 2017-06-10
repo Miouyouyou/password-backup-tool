@@ -510,18 +510,18 @@ var passwordExporterLoginMgr = {
                 } else {
                     let crypto = new OSCrypto();
                     for (let row of entries) {
-                        let li = {
-                            username: row.getResultByName("username_value"),
-                            password: crypto.
-                                        decryptData(crypto.arrayToString(row.getResultByName("password_value")),null),
-                            hostName: NetUtil.newURI(row.getResultByName("origin_url")).prePath,
-                            submitURL: null,
-                            httpRealm: null,
-                            usernameElement: row.getResultByName("username_element"),
-                            passwordElement: row.getResultByName("password_element")
-                        };
-
                         try {
+                            let li = {
+                                username: row.getResultByName("username_value"),
+                                password: crypto.
+                                        decryptData(crypto.arrayToString(row.getResultByName("password_value")),null),
+                                hostName: NetUtil.newURI(row.getResultByName("origin_url")).prePath,
+                                submitURL: null,
+                                httpRealm: null,
+                                usernameElement: row.getResultByName("username_element"),
+                                passwordElement: row.getResultByName("password_element")
+                            };
+
                             switch (row.getResultByName("scheme")) {
                                 case AUTH_TYPE.SCHEME_HTML:
                                     li.submitURL = NetUtil.newURI(row.getResultByName("action_url")).prePath;
