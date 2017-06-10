@@ -344,11 +344,11 @@ var passwordExporterLoginMgr = {
                 input = streamIO.read(stream.available());
                 streamIO.close();
                 stream.close();
+
+                var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
+                                        getService(Components.interfaces.nsIUTF8ConverterService);
+                input = utf8Converter.convertURISpecToUTF8(input, "UTF-8");
             }
-            
-            var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
-                                    getService(Components.interfaces.nsIUTF8ConverterService);
-            input = utf8Converter.convertURISpecToUTF8(input, "UTF-8");
 
             // If CSV format, parse for header info
             if (fp.file.path.indexOf('.csv') != -1) {
