@@ -63,13 +63,10 @@ var passwordExporterLoginMgr = {
                 var content = "";
                 // do export
                 switch (result.type) {
-                    case PwdEx.IO.TYPE_JSON:
-                        // TODO
-                        break;
-                    case PwdEx.IO.TYPE_XML:
+                    case 0:
                         content = this.export('xml', encrypt);
                         break;
-                    case PwdEx.IO.TYPE_CSV:
+                    case 1:
                         content = this.export('csv', encrypt);
                         break;
                 }

@@ -8,7 +8,6 @@ var EXPORTED_SYMBOLS = [];
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("chrome://pwdbt-modules/content/common.js");
-Components.utils.import("chrome://pwdbt-modules/content/io.js");
 
 PwdEx.UI = {
   /* Logger for this object. */
@@ -38,14 +37,9 @@ PwdEx.UI = {
     picker.init(
       aWindow, PwdEx.getString("passwordexporter.filepicker-title"),
       picker.modeSave);
-    /*picker.defaultString =
-      "password-export-" + this._getDateString() + ".json";
-    picker.defaultExtension = "json";*/
     picker.defaultString =
       "password-export-" + this._getDateString() + ".xml";
     picker.defaultExtension = "xml";
-    // XXX: the filter ordering matches the constants in PwdEx.IO
-    //picker.appendFilter("JSON", "*.json");
     picker.appendFilter("XML", "*.xml");
     picker.appendFilter("CSV", "*.csv");
 
