@@ -45,7 +45,7 @@ var passwordExporterLoginMgr = {
             if (masterPassword && passwordExporter.accepted == true) {
                 var picker = Components.classes["@mozilla.org/filepicker;1"].
                                 createInstance(Components.interfaces.nsIFilePicker);
-                picker.init(aWindow, PwdEx.getString("passwordexporter.filepicker-title"), picker.modeSave);
+                picker.init(window, PwdEx.getString("passwordexporter.filepicker-title"), picker.modeSave);
                 picker.defaultString = "password-export-" + this.getDateString() + ".xml";
                 picker.defaultExtension = "xml";
                 picker.appendFilter("XML", "*.xml");
