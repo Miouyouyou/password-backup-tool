@@ -17,7 +17,7 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Sqlite",
                                   "resource://gre/modules/Sqlite.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "OSCrypto",
-                                  "chrome://pwdbt-modules/content/OSCrypto.jsm");
+                                  "chrome://pwdbackuptool/content/OSCrypto.jsm");
 
 const AUTH_TYPE = {
   SCHEME_HTML: 0,
