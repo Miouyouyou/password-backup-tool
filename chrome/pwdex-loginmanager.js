@@ -43,12 +43,21 @@ var passwordExporterLoginMgr = {
             masterPassword = this._showMasterPasswordPrompt();
 
             if (masterPassword && passwordExporter.accepted == true) {
-                let result = PwdEx.UI.openExportFilePicker(window);
-                // If cancelled, return
-                if (null == result)
-                    return;
+                var picker = Components.classes["@mozilla.org/filepicker;1"].
+                                createInstance(Components.interfaces.nsIFilePicker);
+                picker.init(aWindow, PwdEx.getString("passwordexporter.filepicker-title"), picker.modeSave);
+                picker.defaultString = "password-export-" + this.getDateString() + ".xml";
+                picker.defaultExtension = "xml";
+                picker.appendFilter("XML", "*.xml");
+                picker.appendFilter("CSV", "*.csv");
 
-                let stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                if (picker.returnCancel != picker.show()) {
+                    var result = { file : picker.file, type : picker.filterIndex };
+                } else {
+                    return;
+                }
+
+                var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 
                 // Remove file if it exists
                 if (result.file.exists()) {
@@ -93,6 +102,17 @@ var passwordExporterLoginMgr = {
                         window.openDialog("chrome://pwdbackuptool/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
                 }
             }
+        },
+
+        // Returns current date in YYYY-MM-DD format for default file names
+        getDateString: function() {
+            let date = new Date();
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            month = (month < 10 ? '0' + month : month);
+            day = (day < 10 ? '0' + day : day);
+            return (year + "-" + month + "-" + day);
         },
 
         // Generates XML/CSV from Login Manager entries
