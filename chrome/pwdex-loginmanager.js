@@ -57,7 +57,7 @@ var passwordExporterLoginMgr = {
                     return;
                 }
 
-                var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                var ostream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 
                 // Remove file if it exists
                 if (result.file.exists()) {
@@ -65,7 +65,7 @@ var passwordExporterLoginMgr = {
                 }
 
                 result.file.create(result.file.NORMAL_FILE_TYPE, parseInt("0666", 8));
-                stream.init(result.file, 0x02, 0x200, null);
+                ostream.init(result.file, 0x02, 0x200, null);
 
                 // Whether to encrypt the passwords
                 var encrypt = document.getElementById('pwdex-encrypt').checked;
@@ -80,27 +80,32 @@ var passwordExporterLoginMgr = {
                         break;
                 }
 
-                stream.write(content, content.length);
-                stream.close();
+                var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                                    .createInstance(Ci.nsIScriptableUnicodeConverter);
+                converter.charset = "UTF-8";
+                var istream = converter.convertToInputStream(content);
+                var that = this, win = window;
 
-                passwordExporter.debug('Export of ' + this.count + ' entries completed with ' + this.errorCount + ' errors.');
+                NetUtil.asyncCopy(istream, ostream, function(status) {
+                    passwordExporter.debug('Export of ' + that.count + ' entries completed with ' + that.errorCount + ' errors.');
 
-                if (this.errorCount == 0)
-                    alert(PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [this.count], 1));
-                else {
-                    var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+                    if (that.errorCount == 0) {
+                        alert(PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1));
+                    } else {
+                        var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 
-                    var flags = promptService.BUTTON_TITLE_OK * promptService.BUTTON_POS_0 +
-                    promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_1;
+                        var flags = promptService.BUTTON_TITLE_OK * promptService.BUTTON_POS_0 +
+                        promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_1;
 
-                    var response = promptService.confirmEx(window, PwdEx.stringBundle.GetStringFromName('passwordexporter.name'),
-                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [this.count], 1) + "\n\n" +
-                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-failed', [this.errorCount], 1), flags,
+                        var response = promptService.confirmEx(win, PwdEx.stringBundle.GetStringFromName('passwordexporter.name'),
+                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1) + "\n\n" +
+                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-failed', [that.errorCount], 1), flags,
                                     null, PwdEx.stringBundle.GetStringFromName('passwordexporter.show-details'), null, null, {});
 
-                    if (response == 1)
-                        window.openDialog("chrome://pwdbackuptool/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
-                }
+                        if (response == 1)
+                            win.openDialog("chrome://pwdbackuptool/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
+                    }
+                });
             }
         },
 
@@ -340,6 +345,10 @@ var passwordExporterLoginMgr = {
                 streamIO.close();
                 stream.close();
             }
+            
+            var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
+                                    getService(Components.interfaces.nsIUTF8ConverterService);
+            input = utf8Converter.convertURISpecToUTF8(input, "UTF-8");
 
             // If CSV format, parse for header info
             if (fp.file.path.indexOf('.csv') != -1) {
