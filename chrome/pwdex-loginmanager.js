@@ -518,12 +518,15 @@ var passwordExporterLoginMgr = {
                     }
                 } else {
                     let crypto = new OSCrypto();
+                    var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
+                                            getService(Components.interfaces.nsIUTF8ConverterService);
                     for (let row of entries) {
                         try {
                             let li = {
-                                username: row.getResultByName("username_value"),
-                                password: crypto.
-                                        decryptData(crypto.arrayToString(row.getResultByName("password_value")),null),
+                                username: utf8Converter.convertURISpecToUTF8(row.getResultByName("username_value"), "UTF-8"),
+                                password: utf8Converter.convertURISpecToUTF8(
+                                        crypto.decryptData(crypto.arrayToString(row.getResultByName("password_value")), null),
+                                        "UTF-8"),
                                 hostName: NetUtil.newURI(row.getResultByName("origin_url")).prePath,
                                 submitURL: null,
                                 httpRealm: null,
