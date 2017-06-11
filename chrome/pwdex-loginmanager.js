@@ -45,12 +45,12 @@ var passwordExporterLoginMgr = {
 
             // Check if user has accepted agreement
             passwordExporter.checkAgreement();
-            masterPassword = this._showMasterPasswordPrompt();
+            masterPassword = passwordExporter.showMasterPasswordPrompt();
 
             if (masterPassword && passwordExporter.accepted == true) {
                 var picker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
                 picker.init(window, passwordExporter.getString("passwordexporter.filepicker-title"), picker.modeSave);
-                picker.defaultString = "password-export-" + this.getDateString() + ".xml";
+                picker.defaultString = "password-export-" + passwordExporter.getDateString() + ".xml";
                 picker.defaultExtension = "xml";
                 picker.appendFilter("XML", "*.xml");
                 picker.appendFilter("CSV", "*.csv");
@@ -111,17 +111,6 @@ var passwordExporterLoginMgr = {
             }
         },
 
-        // Returns current date in YYYY-MM-DD format for default file names
-        getDateString: function() {
-            let date = new Date();
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
-            month = (month < 10 ? '0' + month : month);
-            day = (day < 10 ? '0' + day : day);
-            return (year + "-" + month + "-" + day);
-        },
-
         // Generates XML/CSV from Login Manager entries
         export: function(type, encrypt) {
             if (type == 'xml') {
@@ -156,34 +145,6 @@ var passwordExporterLoginMgr = {
             }
 
             return this.currentExport;
-        },
-
-        // Show the master password prompt if needed. Adapted from:
-        // https://dxr.mozilla.org/mozilla-central/rev/88bebcaca249aeaca9197382e89d35b02be8292e/toolkit/components/passwordmgr/content/passwordManager.js#494
-        _showMasterPasswordPrompt: function() {
-          // This doesn't harm if passwords are not encrypted
-          var tokendb = Cc["@mozilla.org/security/pk11tokendb;1"].createInstance(Ci.nsIPK11TokenDB);
-          var token = tokendb.getInternalKeyToken();
-
-          // If there is no master password, still give the user a chance to
-          // opt-out of displaying passwords
-          if (token.checkPassword(""))
-            return true;
-
-          // So there's a master password. But since checkPassword didn't
-          //  succeed, we're logged out (per nsIPK11Token.idl).
-          try {
-            // Relogin and ask for the master password.
-            // 'true' means always prompt for token password. User will be
-            // prompted until clicking 'Cancel' or entering the correct
-            // password.
-            token.login(true);
-          } catch (e) {
-            // An exception will be thrown if the user cancels the login prompt
-            // dialog. User is also logged out of Software Security Device.
-          }
-
-          return token.isLoggedIn();
         },
 
         // Records an nsILoginInfo entry to XML
