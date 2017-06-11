@@ -8,7 +8,7 @@
  * Password Backup Tool - Login Manager support
  * This file is for use with the new login manager in Firefox 3+
  */
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+var { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://gre/modules/Task.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");

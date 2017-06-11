@@ -8,7 +8,7 @@
  * Password Backup Tool - Global
  * This file contains functions used by all flavors of Password Backup Tool
  */
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+var { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://gre/modules/Services.jsm");
 
