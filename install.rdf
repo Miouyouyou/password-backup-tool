@@ -9,10 +9,10 @@
     <em:name>Password Backup Tool</em:name>
     <em:description>Export and import your saved passwords</em:description>
     <em:creator>Off JustOff &lt;Off.Just.Off@gmail.com&gt;</em:creator>
-    <em:contributor>Justin Scott</em:contributor>
-    <em:contributor>Justin Dolske</em:contributor>
-    <em:contributor>Philip Chee</em:contributor>
-    <em:contributor>Jorge Villalobos</em:contributor>
+    <em:contributor>Justin Scott &lt;fligtar@gmail.com&gt;</em:contributor>
+    <em:contributor>Justin Dolske &lt;dolske@mozilla.com&gt;></em:contributor>
+    <em:contributor>Philip Chee &lt;philip.chee@gmail.com&gt;></em:contributor>
+    <em:contributor>Jorge Villalobos &lt;Jorge Villalobos&gt;</em:contributor>
     <em:homepageURL>https://github.com/JustOff/password-backup-tool</em:homepageURL>
     <em:optionsURL>chrome://pwdbackuptool/content/pwdexDialog.xul</em:optionsURL>
     <em:localized>
