@@ -16,7 +16,7 @@
         buttons="accept,cancel"
         ondialogaccept="window.opener.passwordExporter.setAgreement();"
         title="&passwordexporter.notice-title;"
-        style="width: 400px;">
+        style="width: 350px;">
 
   <!-- Global functions -->
   <script type="application/x-javascript" src="chrome://pwdbackuptool/content/pwdex-global.js"/>
