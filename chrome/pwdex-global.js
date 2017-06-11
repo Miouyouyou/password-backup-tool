@@ -7,14 +7,13 @@
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 /**
- * Password Exporter - Global
- * This file contains functions used by all flavors of Password Exporter
+ * Password Backup Tool - Global
+ * This file contains functions used by all flavors of Password Backup Tool
  */
 var CC_loginManager = Components.classes["@mozilla.org/login-manager;1"];
 
 var passwordExporter = {
-    version: '1.1', // Incrementing requires new license acceptance
-    appName: null,
+    version: '', // Incrementing requires new license acceptance
     linebreak: null,
     accepted: false, // whether user has accepted this version's license
     initiated: false, // whether Password Exporter has been initiated yet
@@ -24,6 +23,8 @@ var passwordExporter = {
 
     // Called on load and on privacy pref tab load to create the tab overlay because the <tabs> we need doesn't have an ID
     init: function() {
+        this.version = passwordExporterLoginMgr.version;
+
         this.linebreak = this.getLinebreak();
 
         // Include import/export functions

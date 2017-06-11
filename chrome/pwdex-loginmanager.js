@@ -31,6 +31,8 @@ const expPwdVer = "2.0";
 const expHostVer = "1.0";
 
 var passwordExporterLoginMgr = {
+    version: expPwdVer,
+    
     export: {
         currentExport: '', // CSV or XML string of current export
         count: 0, // count of exported logins
