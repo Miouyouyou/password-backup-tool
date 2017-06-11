@@ -5,7 +5,6 @@
  **/
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://pwdbackuptool/content/common.js");
 
 /**
  * Password Exporter - Global
@@ -32,6 +31,9 @@ var passwordExporter = {
         // Include import/export functions
         this.export = passwordExporterLoginMgr.export;
         this.import = passwordExporterLoginMgr.import;
+
+        // Create string bundle
+        this.stringBundle = Services.strings.createBundle("chrome://pwdbackuptool/locale/passwordexporter.properties");
 
         this.initiated = true;
     },
@@ -129,6 +131,14 @@ var passwordExporter = {
     debug: function(text) {
         if (this.dumpDebug)
             dump('Password Exporter ' + this.version + ': ' + text + "\n");
+    },
+
+    /**
+     * Gets the string from the string bundle.
+     * @param aKey the key that identifies the string.
+     */
+    getString : function(aKey) {
+      return this.stringBundle.GetStringFromName(aKey);
     }
 };
 

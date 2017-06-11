@@ -50,7 +50,7 @@ var passwordExporterLoginMgr = {
             if (masterPassword && passwordExporter.accepted == true) {
                 var picker = Components.classes["@mozilla.org/filepicker;1"].
                                 createInstance(Components.interfaces.nsIFilePicker);
-                picker.init(window, PwdEx.getString("passwordexporter.filepicker-title"), picker.modeSave);
+                picker.init(window, passwordExporter.getString("passwordexporter.filepicker-title"), picker.modeSave);
                 picker.defaultString = "password-export-" + this.getDateString() + ".xml";
                 picker.defaultExtension = "xml";
                 picker.appendFilter("XML", "*.xml");
@@ -95,17 +95,17 @@ var passwordExporterLoginMgr = {
                     passwordExporter.debug('Export of ' + that.count + ' entries completed with ' + that.errorCount + ' errors.');
 
                     if (that.errorCount == 0) {
-                        alert(PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1));
+                        alert(passwordExporter.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1));
                     } else {
                         var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 
                         var flags = promptService.BUTTON_TITLE_OK * promptService.BUTTON_POS_0 +
                         promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_1;
 
-                        var response = promptService.confirmEx(win, PwdEx.stringBundle.GetStringFromName('passwordexporter.name'),
-                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1) + "\n\n" +
-                                    PwdEx.stringBundle.formatStringFromName('passwordexporter.alert-passwords-failed', [that.errorCount], 1), flags,
-                                    null, PwdEx.stringBundle.GetStringFromName('passwordexporter.show-details'), null, null, {});
+                        var response = promptService.confirmEx(win, passwordExporter.getString('passwordexporter.name'),
+                                    passwordExporter.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1) + "\n\n" +
+                                    passwordExporter.stringBundle.formatStringFromName('passwordexporter.alert-passwords-failed', [that.errorCount], 1), flags,
+                                    null, passwordExporter.getString('passwordexporter.show-details'), null, null, {});
 
                         if (response == 1)
                             win.openDialog("chrome://pwdbackuptool/content/pwdex-details-export.xul", "","chrome,resizable,centerscreen,close=no,modal");
@@ -282,7 +282,7 @@ var passwordExporterLoginMgr = {
                 var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
                 var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 
-                fp.init(window, PwdEx.stringBundle.GetStringFromName('passwordexporter.filepicker-title'), fp.modeSave);
+                fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeSave);
                 fp.defaultString = 'disabled-export-' + passwordExporter.getDateString();
                 fp.defaultExtension = '.xml';
                 fp.appendFilters(fp.filterXML);
@@ -304,7 +304,7 @@ var passwordExporterLoginMgr = {
 
                 passwordExporter.debug('Disabled hosts export complete.');
 
-                alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-rejected-exported'));
+                alert(passwordExporter.getString('passwordexporter.alert-rejected-exported'));
             },
 
             // Gets disabled hosts from Login Manager
@@ -342,8 +342,8 @@ var passwordExporterLoginMgr = {
             var streamIO = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
             var input, inputArray, importType, doc, header, name, type, version, encrypt;
 
-            fp.init(window, PwdEx.stringBundle.GetStringFromName('passwordexporter.filepicker-title'), fp.modeOpen);
-            fp.appendFilter(PwdEx.stringBundle.GetStringFromName('passwordexporter.filepicker-open-xmlcsv'), '*.xml; *.csv; *');
+            fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeOpen);
+            fp.appendFilter(passwordExporter.getString('passwordexporter.filepicker-open-xmlcsv'), '*.xml; *.csv; *');
 
             // If cancelled, return
             if (fp.show() == fp.returnCancel)
@@ -371,7 +371,7 @@ var passwordExporterLoginMgr = {
                 }
                 if (!header) {
                     // If we still can't read header, there's a problem with the file
-                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-cannot-import'));
+                    alert(passwordExporter.getString('passwordexporter.alert-cannot-import'));
                     return;
                 }
                 var properties = {'extension': header[1],
@@ -387,7 +387,7 @@ var passwordExporterLoginMgr = {
                 var header = doc.documentElement.getElementsByTagName('entries')[0];
 
                 if (doc.documentElement.nodeName == 'parsererror') {
-                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-xml-error'));
+                    alert(passwordExporter.getString('passwordexporter.alert-xml-error'));
                     return;
                 }
 
@@ -410,7 +410,7 @@ var passwordExporterLoginMgr = {
                                     'encrypt': 'false'};
                     that.import('chrome', properties, rows);
                 }).catch(ex => {
-//                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-cannot-import'));
+//                    alert(passwordExporter.getString('passwordexporter.alert-cannot-import'));
                     alert(ex);
                     that.finished();
                 });
@@ -423,13 +423,13 @@ var passwordExporterLoginMgr = {
 
             // Make sure this is a Password Backup Tool or Password Exporter export file
             if (properties.extension != expEngine && properties.extension != oldEngine) {
-                alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-cannot-import'));
+                alert(passwordExporter.getString('passwordexporter.alert-cannot-import'));
                 return;
             }
 
             // Make sure this is a saved passwords file, as opposed to disabled hosts
             if (properties.importtype != 'saved') {
-                alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-wrong-file-reject'));
+                alert(passwordExporter.getString('passwordexporter.alert-wrong-file-reject'));
                 return;
             }
 
@@ -620,7 +620,7 @@ var passwordExporterLoginMgr = {
                 // they are now located in passwordExporterLoginMgr.import.finished()
             }
             else
-                alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-wrong-version'));
+                alert(passwordExporter.getString('passwordexporter.alert-wrong-version'));
         },
 
         // Makes sure logins are formatted correctly for Firefox 3
@@ -746,7 +746,7 @@ var passwordExporterLoginMgr = {
             }
             else {
                 passwordExporter.debug('Import complete.');
-                //alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-passwords-imported'));
+                //alert(passwordExporter.getString('passwordexporter.alert-passwords-imported'));
                 document.getElementById('pwdex-import-complete').hidden = false;
             }
 
@@ -775,8 +775,8 @@ var passwordExporterLoginMgr = {
                 var streamIO = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
                 var input;
 
-                fp.init(window, PwdEx.stringBundle.GetStringFromName('passwordexporter.filepicker-title'), fp.modeOpen);
-                fp.appendFilter(PwdEx.stringBundle.GetStringFromName('passwordexporter.filepicker-open-xml'), '*.xml; *');
+                fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeOpen);
+                fp.appendFilter(passwordExporter.getString('passwordexporter.filepicker-open-xml'), '*.xml; *');
 
                 // If canceled, return
                 if (fp.show() == fp.returnCancel)
@@ -795,19 +795,19 @@ var passwordExporterLoginMgr = {
 
                 // Return if parser error or no header
                 if (doc.documentElement.nodeName == 'parsererror' || !header) {
-                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-xml-error'));
+                    alert(passwordExporter.getString('passwordexporter.alert-xml-error'));
                     return;
                 }
 
                 // Return if not Password Backup Tool or Password Exporter
                 if (header.getAttribute('ext') != expEngine && header.getAttribute('ext') != oldEngine) {
-                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-cannot-import'));
+                    alert(passwordExporter.getString('passwordexporter.alert-cannot-import'));
                     return;
                 }
 
                 // Make sure it's a disabled hosts file
                 if (header.getAttribute('type') != 'rejected') {
-                    alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-wrong-file-saved'));
+                    alert(passwordExporter.getString('passwordexporter.alert-wrong-file-saved'));
                     return;
                 }
 
@@ -819,7 +819,7 @@ var passwordExporterLoginMgr = {
                     LoadRejects();
                 }
 
-                alert(PwdEx.stringBundle.GetStringFromName('passwordexporter.alert-rejected-imported'));
+                alert(passwordExporter.getString('passwordexporter.alert-rejected-imported'));
             },
 
             // Import disabled hosts
@@ -852,6 +852,7 @@ var passwordExporterLoginMgr = {
         getRowsFromDBWithoutLocks(path, description, selectQuery) {
             let dbOptions = {
                 readOnly: true,
+                // https://bugzilla.mozilla.org/show_bug.cgi?id=1285041 (FF51+)
                 ignoreLockingMode: true,
                 path,
             };
