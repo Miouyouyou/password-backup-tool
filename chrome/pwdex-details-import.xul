@@ -6,7 +6,6 @@
   - obtain one at http://mozilla.org/MPL/2.0/. -->
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
-<?xml-stylesheet href="chrome://pwdbackuptool/skin/passwordexporter.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://pwdbackuptool/locale/passwordexporter.dtd" >
 
