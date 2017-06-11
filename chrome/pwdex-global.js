@@ -4,13 +4,15 @@
  * obtain one at http://mozilla.org/MPL/2.0/.
  **/
 
-Components.utils.import("resource://gre/modules/Services.jsm");
-
 /**
  * Password Backup Tool - Global
  * This file contains functions used by all flavors of Password Backup Tool
  */
-var CC_loginManager = Components.classes["@mozilla.org/login-manager;1"];
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+
+Cu.import("resource://gre/modules/Services.jsm");
+
+var CC_loginManager = Cc["@mozilla.org/login-manager;1"];
 
 var passwordExporter = {
     version: '', // Incrementing requires new license acceptance
@@ -46,7 +48,7 @@ var passwordExporter = {
 
     // checks to see if user has accepted notice for this version and if not, shows window
     checkAgreement: function() {
-        var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("");
+        var prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("");
 
         if (prefs.getPrefType('extensions.pwdbackuptool.agreeVersion') == prefs.PREF_STRING) {
             if (this.version == prefs.getCharPref('extensions.pwdbackuptool.agreeVersion')) {
@@ -63,7 +65,7 @@ var passwordExporter = {
 
     // write pref showing agreement to notice
     setAgreement: function() {
-        var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("");
+        var prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("");
 
         prefs.setCharPref('extensions.pwdbackuptool.agreeVersion', this.version);
         this.accepted = true;

@@ -48,8 +48,7 @@ var passwordExporterLoginMgr = {
             masterPassword = this._showMasterPasswordPrompt();
 
             if (masterPassword && passwordExporter.accepted == true) {
-                var picker = Components.classes["@mozilla.org/filepicker;1"].
-                                createInstance(Components.interfaces.nsIFilePicker);
+                var picker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
                 picker.init(window, passwordExporter.getString("passwordexporter.filepicker-title"), picker.modeSave);
                 picker.defaultString = "password-export-" + this.getDateString() + ".xml";
                 picker.defaultExtension = "xml";
@@ -62,7 +61,7 @@ var passwordExporterLoginMgr = {
                     return;
                 }
 
-                var ostream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                var ostream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(Ci.nsIFileOutputStream);
 
                 // Remove file if it exists
                 if (result.file.exists()) {
@@ -95,7 +94,7 @@ var passwordExporterLoginMgr = {
                     if (that.errorCount == 0) {
                         alert(passwordExporter.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1));
                     } else {
-                        var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+                        var promptService = Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Ci.nsIPromptService);
 
                         var flags = promptService.BUTTON_TITLE_OK * promptService.BUTTON_POS_0 +
                         promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_1;
@@ -138,7 +137,7 @@ var passwordExporterLoginMgr = {
             this.errorCount = 0;
             passwordExporter.failed = '';
 
-            var loginManager = CC_loginManager.getService(Components.interfaces.nsILoginManager);
+            var loginManager = CC_loginManager.getService(Ci.nsILoginManager);
             var logins = loginManager.getAllLogins({});
 
             for (var i = 0; i < logins.length; i++) {
@@ -163,9 +162,7 @@ var passwordExporterLoginMgr = {
         // https://dxr.mozilla.org/mozilla-central/rev/88bebcaca249aeaca9197382e89d35b02be8292e/toolkit/components/passwordmgr/content/passwordManager.js#494
         _showMasterPasswordPrompt: function() {
           // This doesn't harm if passwords are not encrypted
-          var tokendb =
-              Components.classes["@mozilla.org/security/pk11tokendb;1"].
-                  createInstance(Components.interfaces.nsIPK11TokenDB);
+          var tokendb = Cc["@mozilla.org/security/pk11tokendb;1"].createInstance(Ci.nsIPK11TokenDB);
           var token = tokendb.getInternalKeyToken();
 
           // If there is no master password, still give the user a chance to
@@ -275,8 +272,8 @@ var passwordExporterLoginMgr = {
         disabled: {
             // starts export of login disabled sites that never saved passwords
             start: function() {
-                var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
-                var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+                var fp = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+                var stream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(Ci.nsIFileOutputStream);
 
                 fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeSave);
                 fp.defaultString = 'disabled-export-' + passwordExporter.getDateString();
@@ -306,7 +303,7 @@ var passwordExporterLoginMgr = {
                 var xml = '<xml>' + passwordExporter.linebreak;
                 xml += '<entries ext="' + expEngine + '" extxmlversion="' + expHostVer + '" type="rejected">' + passwordExporter.linebreak;
 
-                var loginManager = CC_loginManager.getService(Components.interfaces.nsILoginManager);
+                var loginManager = CC_loginManager.getService(Ci.nsILoginManager);
                 var disabledHosts = loginManager.getAllDisabledHosts({});
 
                 for (var i = 0; i < disabledHosts.length; i++) {
@@ -329,9 +326,9 @@ var passwordExporterLoginMgr = {
 
         // Starts the import of logins from a CSV or XML file
         start: function() {
-            var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
-            var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-            var streamIO = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+            var fp = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+            var stream = Cc["@mozilla.org/network/file-input-stream;1"].createInstance(Ci.nsIFileInputStream);
+            var streamIO = Cc["@mozilla.org/scriptableinputstream;1"].createInstance(Ci.nsIScriptableInputStream);
             var input, inputArray, importType, doc, header, name, type, version, encrypt;
 
             fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeOpen);
@@ -348,8 +345,7 @@ var passwordExporterLoginMgr = {
                 streamIO.close();
                 stream.close();
 
-                var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
-                                        getService(Components.interfaces.nsIUTF8ConverterService);
+                var utf8Converter = Cc["@mozilla.org/intl/utf8converterservice;1"].getService(Ci.nsIUTF8ConverterService);
                 input = utf8Converter.convertURISpecToUTF8(input, "UTF-8");
             }
 
@@ -440,9 +436,9 @@ var passwordExporterLoginMgr = {
                 document.getElementById('pwdex-import-underway').hidden = false;
                 document.getElementById('pwdex-import-cancel').hidden = false;
 
-                var loginManager = CC_loginManager.getService(Components.interfaces.nsILoginManager);
+                var loginManager = CC_loginManager.getService(Ci.nsILoginManager);
                 var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
-                                         Components.interfaces.nsILoginInfo, "init");
+                                         Ci.nsILoginInfo, "init");
                 if (type == 'xml') {
                     this.totalCount = entries.length;
 
@@ -562,8 +558,7 @@ var passwordExporterLoginMgr = {
                     }
                 } else {
                     let crypto = new OSCrypto();
-                    var utf8Converter = Components.classes["@mozilla.org/intl/utf8converterservice;1"].
-                                            getService(Components.interfaces.nsIUTF8ConverterService);
+                    var utf8Converter = Cc["@mozilla.org/intl/utf8converterservice;1"].getService(Ci.nsIUTF8ConverterService);
                     for (let row of entries) {
                         try {
                             let li = {
@@ -679,9 +674,9 @@ var passwordExporterLoginMgr = {
 
         // Insert the new login into Login Manager
         doInsert: function(entries) {
-            var loginManager = CC_loginManager.getService(Components.interfaces.nsILoginManager);
+            var loginManager = CC_loginManager.getService(Ci.nsILoginManager);
             var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
-                                         Components.interfaces.nsILoginInfo, "init");
+                                         Ci.nsILoginInfo, "init");
             var i = 0;
             while (true) {
                 yield i;
@@ -752,9 +747,9 @@ var passwordExporterLoginMgr = {
         disabled: {
             // Starts import of disabled hosts from XML file
             start: function() {
-                var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
-                var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-                var streamIO = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+                var fp = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+                var stream = Cc["@mozilla.org/network/file-input-stream;1"].createInstance(Ci.nsIFileInputStream);
+                var streamIO = Cc["@mozilla.org/scriptableinputstream;1"].createInstance(Ci.nsIScriptableInputStream);
                 var input;
 
                 fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeOpen);
@@ -806,7 +801,7 @@ var passwordExporterLoginMgr = {
 
             // Import disabled hosts
             import: function(entries) {
-                var loginManager = CC_loginManager.getService(Components.interfaces.nsILoginManager);
+                var loginManager = CC_loginManager.getService(Ci.nsILoginManager);
 
                 for (var i = 0; i < entries.length; i++) {
                     loginManager.setLoginSavingEnabled(entries[i].getAttribute('host'), false);
