@@ -17,7 +17,6 @@ var passwordExporter = {
     appName: null,
     linebreak: null,
     accepted: false, // whether user has accepted this version's license
-    dumpDebug: false, // whether debug message should be dumped to console
     initiated: false, // whether Password Exporter has been initiated yet
 
     export: null, // export functions specific to this app version
@@ -25,7 +24,6 @@ var passwordExporter = {
 
     // Called on load and on privacy pref tab load to create the tab overlay because the <tabs> we need doesn't have an ID
     init: function() {
-        this.checkDebug();
         this.linebreak = this.getLinebreak();
 
         // Include import/export functions
@@ -112,25 +110,6 @@ var passwordExporter = {
     // returns a number with leading zero
     leadingZero: function(number) {
         return (number < 10 ? '0' + number : number);
-    },
-
-    // checks preference for debug output
-    checkDebug: function() {
-        var prefs = Components.classes["@mozilla.org/preferences-service;1"].
-                    getService(Components.interfaces.nsIPrefService).getBranch("");
-
-        if (prefs.getPrefType('extensions.pwdbackuptool.debug') == prefs.PREF_BOOL) {
-            if (true == prefs.getBoolPref('extensions.pwdbackuptool.debug'))
-                this.dumpDebug = true;
-        }
-
-        prefs = null;
-    },
-
-    // Dumps debug text if pref set
-    debug: function(text) {
-        if (this.dumpDebug)
-            dump('Password Exporter ' + this.version + ': ' + text + "\n");
     },
 
     /**

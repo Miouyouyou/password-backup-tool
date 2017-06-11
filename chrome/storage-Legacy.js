@@ -38,8 +38,6 @@
 
 /**
  * Changes:
- *  log() -> passwordExporter.debug()
- *  this.log -> passwordExporter.debug()
  * extraLogin encryption
  */
 
@@ -98,7 +96,6 @@ var passwordExporterStorageLegacy = {
                 var host = uri.host;
                 var port = uri.port;
             } catch (e) {
-                passwordExporter.debug("2E upgrade: Can't parse hostname " + aLogin.hostname);
                 return upgradedLogins;
             }
 
@@ -111,8 +108,6 @@ var passwordExporterStorageLegacy = {
                 // (Or maybe it's a proxy login!) To try and avoid
                 // breaking logins, we'll add *both* http and https
                 // versions.
-                passwordExporter.debug("2E upgrade: Cloning login for " + aLogin.hostname);
-
                 aLogin.hostname = "http://" + host + ":" + port;
 
                 var extraLogin = Components.classes["@mozilla.org/login-manager/loginInfo;1"].
@@ -140,8 +135,6 @@ var passwordExporterStorageLegacy = {
             // previously didn't store anything.
             if (aLogin.httpRealm == "")
                 aLogin.httpRealm = aLogin.hostname;
-
-            passwordExporter.debug("2E upgrade: " + oldHost + " ---> " + aLogin.hostname);
 
             return upgradedLogins;
         }
@@ -189,12 +182,11 @@ var passwordExporterStorageLegacy = {
                     username = uri.username;
                 
             } catch (e) {
-                passwordExporter.debug("Can't cleanup URL: " + aURL);
                 newURL = aURL;
             }
 
-            if (newURL != aURL)
-                passwordExporter.debug("2E upgrade: " + aURL + " ---> " + newURL);
+//            if (newURL != aURL)
+//                passwordExporter.debug("2E upgrade: " + aURL + " ---> " + newURL);
 
             return [newURL, username];
         }
@@ -242,7 +234,6 @@ var passwordExporterStorageLegacy = {
         if (!isHTTP.test(aLogin.hostname) && !isFormLogin) {
             aLogin.httpRealm = aLogin.hostname;
             aLogin.formSubmitURL = null;
-            passwordExporter.debug("2E upgrade: set empty realm to " + aLogin.httpRealm);
         }
 
         return upgradedLogins;
@@ -273,7 +264,6 @@ var passwordExporterStorageLegacy = {
             plainOctet += converter.Finish();
             cipherText = this._decoderRing.encryptString(plainOctet);
         } catch (e) {
-            this.passwordExporter.debug("Failed to encrypt string. (" + e.name + ")");
             // If the user clicks Cancel, we get NS_ERROR_FAILURE.
             // (unlike decrypting, which gets NS_ERROR_NOT_AVAILABLE).
             if (e.result == Components.results.NS_ERROR_FAILURE)

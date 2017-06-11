@@ -39,8 +39,6 @@ var passwordExporterLoginMgr = {
 
         // starts export of saved passwords to XML/CSV file
         start: function() {
-            passwordExporter.debug('Starting Export...');
-
             let masterPassword;
 
             // Check if user has accepted agreement
@@ -92,8 +90,6 @@ var passwordExporterLoginMgr = {
                 var that = this, win = window;
 
                 NetUtil.asyncCopy(istream, ostream, function(status) {
-                    passwordExporter.debug('Export of ' + that.count + ' entries completed with ' + that.errorCount + ' errors.');
-
                     if (that.errorCount == 0) {
                         alert(passwordExporter.stringBundle.formatStringFromName('passwordexporter.alert-passwords-exported', [that.count], 1));
                     } else {
@@ -127,7 +123,6 @@ var passwordExporterLoginMgr = {
 
         // Generates XML/CSV from Login Manager entries
         export: function(type, encrypt) {
-            passwordExporter.debug('Generating ' + type + ' entries...');
             if (type == 'xml') {
                 this.currentExport = '<xml>' + passwordExporter.linebreak;
                 this.currentExport += '<entries ext="' + expEngine + '" extxmlversion="' + expPwdVer + '" type="saved" encrypt="' + encrypt + '">' + passwordExporter.linebreak;
@@ -278,7 +273,6 @@ var passwordExporterLoginMgr = {
         disabled: {
             // starts export of login disabled sites that never saved passwords
             start: function() {
-                passwordExporter.debug('Starting Disabled Hosts Export...');
                 var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
                 var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 
@@ -301,8 +295,6 @@ var passwordExporterLoginMgr = {
 
                 stream.write(xml, xml.length);
                 stream.close();
-
-                passwordExporter.debug('Disabled hosts export complete.');
 
                 alert(passwordExporter.getString('passwordexporter.alert-rejected-exported'));
             },
@@ -335,8 +327,6 @@ var passwordExporterLoginMgr = {
 
         // Starts the import of logins from a CSV or XML file
         start: function() {
-            passwordExporter.debug('Starting Import...');
-
             var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
             var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
             var streamIO = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
@@ -419,8 +409,6 @@ var passwordExporterLoginMgr = {
 
         // Validates import file and parses it
         import: function (type, properties, entries) {
-            passwordExporter.debug(type + ' file read...');
-
             // Make sure this is a Password Backup Tool or Password Exporter export file
             if (properties.extension != expEngine && properties.extension != oldEngine) {
                 alert(passwordExporter.getString('passwordexporter.alert-cannot-import'));
@@ -625,8 +613,6 @@ var passwordExporterLoginMgr = {
 
         // Makes sure logins are formatted correctly for Firefox 3
         getFormattedLogin: function(properties, loginInfo) {
-            passwordExporter.debug('pre-getFormattedLogin: [hostname: ' + loginInfo.hostname + ', httpRealm: ' + loginInfo.httpRealm + ', formSubmitURL: ' + loginInfo.formSubmitURL + ', usernameField: ' + loginInfo.usernameField + ', passwordField: ' + loginInfo.passwordField + ']');
-
             // in version 1.0.2, encryption was only for passwords... in 1.0.4 we encrypt usernames as well
             if (properties.encrypt == 'true') {
                 loginInfo.password = atob(loginInfo.password);
@@ -655,8 +641,6 @@ var passwordExporterLoginMgr = {
             for each (var login in loginInfo) {
                 if (login.httpRealm != null)
                     login.formSubmitURL = null;
-
-                passwordExporter.debug('post-getFormattedLogin: [hostname: ' + login.hostname + ', httpRealm: ' + login.httpRealm + ', formSubmitURL: ' + login.formSubmitURL + ', usernameField: ' + login.usernameField + ', passwordField: ' + login.passwordField + ']');
             }
 
             return loginInfo;
@@ -699,8 +683,6 @@ var passwordExporterLoginMgr = {
             var i = 0;
             while (true) {
                 yield i;
-                passwordExporter.debug('Adding: [hostname: ' + entries[i].hostname + ', httpRealm: ' + entries[i].httpRealm + ', formSubmitURL: ' + entries[i].formSubmitURL + ', username: ' + entries[i].username + ', usernameField: ' + entries[i].usernameField + ', passwordField: ' + entries[i].passwordField + ']');
-
                 // Fix for issue 39
                 if (entries[i].httpRealm) {
                     entries[i].formSubmitURL = null;
@@ -741,11 +723,9 @@ var passwordExporterLoginMgr = {
             document.getElementById('pwdex-import-finished').hidden = false;
 
             if (this.cancelled) {
-                passwordExporter.debug('Import cancelled by user.');
                 document.getElementById('pwdex-import-cancelled').hidden = false;
             }
             else {
-                passwordExporter.debug('Import complete.');
                 //alert(passwordExporter.getString('passwordexporter.alert-passwords-imported'));
                 document.getElementById('pwdex-import-complete').hidden = false;
             }
