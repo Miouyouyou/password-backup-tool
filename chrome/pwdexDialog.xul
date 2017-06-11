@@ -27,11 +27,13 @@
     <groupbox>
       <caption label="&passwordexporter.export-saved-caption;" />
       <description flex="1">&passwordexporter.export-saved-desc;</description>
-      <vbox align="right">
+      <vbox>
         <hbox>
+          <spacer flex="1" />
           <checkbox label="&passwordexporter.export-saved-encrypt;"
                     id="pwdex-encrypt"
                     accesskey="&passwordexporter.export-saved-encrypt-accesskey;" />
+          <spacer flex="1" />
           <button label="&passwordexporter.export-saved-button;"
                   id="pwdex-export-btn"
                   accesskey="&passwordexporter.export-saved-button-accesskey;"
@@ -72,11 +74,14 @@
                      onclick="passwordExporter.import.showDetailsWindow();" />
             </hbox>
           </vbox>
-          <spacer flex="3" />
-          <button label="&passwordexporter.import-saved-button;"
+          <spacer flex="1" />
+          <vbox>
+            <label value=" " />
+            <button label="&passwordexporter.import-saved-button;"
                   id="pwdex-import-btn"
                   accesskey="&passwordexporter.import-saved-button-accesskey;"
                   oncommand="passwordExporter.import.start();" />
+          </vbox>
         </hbox>
       </vbox>
    </groupbox>
