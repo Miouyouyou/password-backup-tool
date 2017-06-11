@@ -15,7 +15,7 @@
         buttons="accept"
         onload="window.opener.passwordExporter.import.populateFailed(document.getElementById('entries'));"
         title="&passwordexporter.name;"
-        style="width: 400px;">
+        style="width: 500px;">
 
   <vbox>
     <groupbox>
