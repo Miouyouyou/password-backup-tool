@@ -289,8 +289,9 @@ var passwordExporterLoginMgr = {
         start: function() {
             var fp = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
             var stream = Cc["@mozilla.org/network/file-input-stream;1"].createInstance(Ci.nsIFileInputStream);
-            var streamIO = Cc["@mozilla.org/scriptableinputstream;1"].createInstance(Ci.nsIScriptableInputStream);
-            var input, inputArray, importType, doc, header, name, type, version, encrypt;
+            var is = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                   .createInstance(Components.interfaces.nsIConverterInputStream);
+            var input, data = {}, inputArray, importType, doc, header, name, type, version, encrypt;
 
             fp.init(window, passwordExporter.getString('passwordexporter.filepicker-title'), fp.modeOpen);
             fp.appendFilter(passwordExporter.getString('passwordexporter.filepicker-open-xmlcsv'), '*.xml; *.csv; *');
@@ -301,13 +302,12 @@ var passwordExporterLoginMgr = {
 
             if (fp.file.path.indexOf('.csv') != -1 || fp.file.path.indexOf('.xml') != -1) {
                 stream.init(fp.file, 0x01, parseInt("0444", 8), null);
-                streamIO.init(stream);
-                input = streamIO.read(stream.available());
-                streamIO.close();
+                is.init(stream, "UTF-8", stream.available(), 0xFFFD);
+                is.readString(0xffffffff, data);
+                is.close();
                 stream.close();
 
-                var utf8Converter = Cc["@mozilla.org/intl/utf8converterservice;1"].getService(Ci.nsIUTF8ConverterService);
-                input = utf8Converter.convertURISpecToUTF8(input, "UTF-8");
+                input = data.value;
             }
 
             // If CSV format, parse for header info
